@@ -1,71 +1,51 @@
-LIBRARY ieee;
-USE ieee.std_logic_1164.ALL;
- 
-ENTITY controller_tb IS
-END controller_tb;
- 
-ARCHITECTURE behavior OF controller_tb IS 
- 
-    -- Component Declaration for the Unit Under Test (UUT)
- 
-    COMPONENT traffic_signal_light
-    PORT(
-         clk_100MHz : IN  std_logic;
-         rst : IN  std_logic;
-         main_street : OUT  std_logic_vector(2 downto 0);
-         sub_street : OUT  std_logic_vector(2 downto 0);
-         crosswalk : OUT  std_logic;
-         timerr : OUT  std_logic_vector(3 downto 0)
-        );
-    END COMPONENT;
-    
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
-   --Inputs
-   signal clk_100MHz : std_logic := '0';
-   signal rst : std_logic := '1';
+entity traffic_signal_light_tb is
+end traffic_signal_light_tb;
 
- 	--Outputs
-   signal main_street : std_logic_vector(2 downto 0);
-   signal sub_street : std_logic_vector(2 downto 0);
-   signal crosswalk : std_logic;
-   signal timerr : std_logic_vector(3 downto 0);
+architecture behavioral of traffic_signal_light_tb is
+    signal clk_100MHz: std_logic := '0';
+    signal rst: std_logic := '0';
+    signal main_street: std_logic_vector(2 downto 0);
+    signal sub_street: std_logic_vector(2 downto 0);
+    signal crosswalk: std_logic;
+    signal timerr: std_logic_vector(3 downto 0);
 
-   -- Clock period definitions
-   constant clk_100MHz_period : time := 10 ns;
- 
-BEGIN
- 
-	-- Instantiate the Unit Under Test (UUT)
-   uut: traffic_signal_light PORT MAP (
-          clk_100MHz => clk_100MHz,
-          rst => rst,
-          main_street => main_street,
-          sub_street => sub_street,
-          crosswalk => crosswalk,
-          timerr => timerr
+    constant clk_period: time := 10 ns; 
+
+begin
+    dut: entity work.traffic_signal_light
+        port map (
+            clk_100MHz => clk_100MHz,
+            rst => rst,
+            main_street => main_street,
+            sub_street => sub_street,
+            crosswalk => crosswalk,
+            timerr => timerr
         );
 
-   -- Clock process definitions
-   clk_100MHz_process :process
-   begin
-		clk_100MHz <= '0';
-		wait for clk_100MHz_period/2;
-		clk_100MHz <= '1';
-		wait for clk_100MHz_period/2;
-   end process;
- 
+    -- Clock generation process
+    clk_process: process
+    begin
+        while now < 1000 ns loop  
+            clk_100MHz <= '1';
+            wait for clk_period / 2;
+            clk_100MHz <= '0';
+            wait for clk_period / 2;
+        end loop;
+        wait;
+    end process;
 
-   -- Stimulus process
-   stim_proc: process
-   begin		
-      -- hold reset state for 100 ns.
-      wait for 100 ns;	
+    -- Reset process
+    reset_process: process
+    begin
+        rst <= '1';
+--        wait for 20 ns; 
+--        rst <= '0';
+        wait;
+    end process;
 
-      wait for clk_100MHz_period*10;
 
-      -- insert stimulus here 
-
-      wait;
-   end process;
-
-END;
+end behavioral;
