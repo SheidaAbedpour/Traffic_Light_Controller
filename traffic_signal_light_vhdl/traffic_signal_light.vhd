@@ -27,23 +27,26 @@ architecture Behavioral of traffic_signal_light is
 --	     clk_out: out std_logic);
 --end component;
 
-type states is (GaRbRw, YaRbRw, RaGbRw, RaYbRw, RaRbGw, RaRbRw);
+type states is (GaRbRw, YaRbRw, RaGbRw, RaYbRw, RaRbGw, RaRbRw, BLINK);
 signal cur_state: states:= GaRbRw;
 signal timer: std_logic_vector(3 downto 0):= "0000";
 --signal clk_1Hz: std_logic;
+signal blink_signal: std_logic:= '0';
 
 begin
 
 --clock_divider: clock_divide port map(clk_100MHz, clk_1Hz);
 
-process(clk_100MHz) begin
-  if(clk_100MHz'event and clk_100Mhz = '0') then
-		timer <= std_logic_vector(unsigned(timer) + 1);
-  end if;
-end process;
+process(clk_100MHz, rst) begin
 
-process(timer) begin
-
+	if(clk_100MHz'event and clk_100Mhz = '1') then
+		timer <= std_logic_vector(unsigned(timer) + 1);			
+		if(rst = '0') then
+			cur_state <= BLINK;
+			blink_signal <= not blink_signal;
+			timer <= "0000";
+		end if;
+		
 		case cur_state is
 	when GaRbRw =>
 		if(timer = "0100") then
@@ -68,16 +71,22 @@ process(timer) begin
 	when RaRbRw =>
 		if(timer = "1110") then
 			cur_state <= GaRbRw;
+			timer <= "0000";
 		end if;
-	 
-	 end case;
-
+	when BLINK =>
+		if(rst = '1') then
+			cur_state <= GaRbRw;
+		end if;
+		
+	end case;
+	
+	end if;
 
 end process;
 
 
-process(cur_state) begin
-		
+process(cur_state, blink_signal) begin
+				
 		case cur_state is
 	when GaRbRw =>
 		main_street <= "100";
@@ -103,12 +112,19 @@ process(cur_state) begin
 		main_street <= "001";
 		sub_street <= "001";
 		crosswalk <= '0';
-	when others =>
-		main_street <= "000";
-		sub_street <= "000";
-		crosswalk <= '0';
+	when BLINK =>
+		if(blink_signal = '1') then
+			main_street <= "001";
+			sub_street <= "001";
+			crosswalk <= '1';
+		else
+			main_street <= "000";
+			sub_street <= "000";
+			crosswalk <= '0';
+		end if;
+	
 	end case;
-
+	
 end process;
 
 timerr <= timer;
