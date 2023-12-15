@@ -13,7 +13,8 @@ entity traffic_signal_light is
 		  rst: in std_logic;
 		  main_street: out std_logic_vector(2 downto 0);
 		  sub_street: out std_logic_vector(2 downto 0);
-		  crosswalk: out std_logic
+		  crosswalk: out std_logic;
+		  timerr: out std_logic_vector(3 downto 0)
 	);
 
 end traffic_signal_light;
@@ -21,23 +22,29 @@ end traffic_signal_light;
 
 architecture Behavioral of traffic_signal_light is
 
-component clock_divide
-   port(clk_in: in std_logic;
-	     clk_out: out std_logic);
-end component;
+--component clock_divide
+--   port(clk_in: in std_logic;
+--	     clk_out: out std_logic);
+--end component;
 
 type states is (GaRbRw, YaRbRw, RaGbRw, RaYbRw, RaRbGw, RaRbRw);
-signal cur_state: states;
+signal cur_state: states:= GaRbRw;
 signal timer: std_logic_vector(3 downto 0):= "0000";
-signal clk_1Hz: std_logic;
+--signal clk_1Hz: std_logic;
 
 begin
 
-clock_divider: clock_divide port map(clk_100MHz, clk_1Hz);
+--clock_divider: clock_divide port map(clk_100MHz, clk_1Hz);
 
-process(clk_1Hz) begin
+process(clk_100MHz) begin
+  if(clk_100MHz'event and clk_100Mhz = '0') then
+		timer <= std_logic_vector(unsigned(timer) + 1);
+  end if;
+end process;
 
-	 case cur_state is
+process(timer) begin
+
+		case cur_state is
 	when GaRbRw =>
 		if(timer = "0100") then
 			cur_state <= YaRbRw;
@@ -61,20 +68,16 @@ process(clk_1Hz) begin
 	when RaRbRw =>
 		if(timer = "1110") then
 			cur_state <= GaRbRw;
-			timer <= "0000";
 		end if;
-	
-	 if(timer = "1110") then timer <= "0000"; else
-	 timer <= std_logic_vector(unsigned(timer) + 1);
-	 end if;
 	 
 	 end case;
+
 
 end process;
 
 
 process(cur_state) begin
-
+		
 		case cur_state is
 	when GaRbRw =>
 		main_street <= "100";
@@ -100,11 +103,14 @@ process(cur_state) begin
 		main_street <= "001";
 		sub_street <= "001";
 		crosswalk <= '0';
-		
-		end case;
+	when others =>
+		main_street <= "000";
+		sub_street <= "000";
+		crosswalk <= '0';
+	end case;
 
 end process;
 
+timerr <= timer;
 
 end Behavioral;
-
