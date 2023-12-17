@@ -10,7 +10,7 @@ architecture behavioral of traffic_signal_light_tb is
     signal rst: std_logic := '0';
     signal main_street: std_logic_vector(2 downto 0);
     signal sub_street: std_logic_vector(2 downto 0);
-    signal crosswalk: std_logic;
+    signal crosswalk: std_logic_vector(1 downto 0);
     signal timerr: std_logic_vector(3 downto 0);
 
     constant clk_period: time := 10 ns; 
@@ -42,8 +42,14 @@ begin
     reset_process: process
     begin
         rst <= '1';
---        wait for 20 ns; 
---        rst <= '0';
+        wait for 140 ns; 
+        rst <= '0';
+		  wait for 20 ns;
+		  rst <= '1';
+		  wait for 100 ns;
+		  rst <= '0';
+		  wait for 10 ns;
+		  rst <= '1';
         wait;
     end process;
 
