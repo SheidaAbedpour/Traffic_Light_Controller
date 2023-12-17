@@ -1,0 +1,10 @@
+NET "clk_100MHz"      LOC = P50;
+NET "rst"             LOC = p133;
+NET "main_street[2]"  LOC = P120;
+NET "main_street[1]"  LOC = P121;
+NET "main_street[0]"  LOC = P123;
+NET "sub_street[2]"   LOC = P124;
+NET "sub_street[1]"   LOC = P126;
+NET "sub_street[0]"   LOC = P127;
+NET "crosswalk[1]"    LOC = P131;
+NET "crosswalk[0]"    LOC = P132;
