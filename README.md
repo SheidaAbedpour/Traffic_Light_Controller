@@ -1,4 +1,4 @@
-# Traffic Light Controller
+# Traffic Light Controller 🚦
 
 This project implements a VHDL-based traffic signal light controller for an FPGA. The controller manages the flow of traffic at a junction by controlling the lights for the main street, sub street, and crosswalk. It utilizes a finite state machine to transition between different states, simulating a real-world traffic signal.
 
@@ -46,7 +46,7 @@ To use this project, follow these steps:
 
 ## Constraints
 
-Ensure that the following signals are correctly mapped in your constraints file:
+📍Ensure that the following signals are correctly mapped in your constraints file:
 
 - `clk_100MHz`: 100 MHz clock signal.
 - `rst`: Reset signal.
@@ -66,7 +66,7 @@ Ensure that the following signals are correctly mapped in your constraints file:
 - **Date:** December 2023
 
 
-## Collaboration
+## Collaboration 🤝
 
-- **[Matin Azami](https://github.com/InFluX-M):**
-- **[Sheida Abedpour](https://github.com/SheidaAbedpour):**
+- **[Matin Azami](https://github.com/InFluX-M)**
+- **[Sheida Abedpour](https://github.com/SheidaAbedpour)**
