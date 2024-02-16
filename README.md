@@ -20,7 +20,7 @@ The project consists of the following main components:
 
 - `traffic_signal_light.vhdl`: Main VHDL file defining the entity and architecture for the traffic signal light controller.
 - `clock_divide.vhdl`: VHDL file for a clock divider component used to generate a 1 Hz signal from the 100 MHz clock.
-- `constraints.xdc`: Constraints file specifying the mapping of signals to specific locations on the FPGA.
+- `UCF_LEDs.ucf`: Constraints file specifying the mapping of signals to specific locations on the FPGA.
 
 ## How It Works
 
